@@ -3,3 +3,12 @@ spring:
     user:
       name: user
       password: 1234
+
+
+logging:
+  level:
+    org:
+      springframework: debug
+      web: debug
+
+
