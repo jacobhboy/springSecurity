@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -95,6 +96,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionFixation().changeSessionId(); // 인증할때마다 세션 아이디 바꾸기
 
+        // 세션 정책
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
 
+        http
+                .authorizeRequests()
+                .antMatchers("/shop/login").permitAll()
+                .antMatchers("/mypage").hasRole("USER")
+                .antMatchers("shop/admin/pay").access("hasRole('ADMIN')")
+                .antMatchers("shop/admin/**").access("hasRole('admin') or hasRole('SYS')")
+                .anyRequest().authenticated();
     }
 }
